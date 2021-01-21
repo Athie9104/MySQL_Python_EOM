@@ -4,9 +4,36 @@ from tkinter import *
 from tkinter import messagebox
 
 
-from tkinter import messagebox
-from tkinter import*
-import mysql.connector
+def logging():
+    UserN = entUser.get()
+    passW = entpass.get()
+    print(f"The name entered by you is {UserN} {passW}")
+    loginTodb(UserN, passW)
+
+
+def loginTodb(UserN, passW):
+    if passW:
+        mydb = mysql.connector.connect(user='lifechoices',
+                                        password='@Lifechoices1234',
+                                        host='127.0.0.1',
+                                        database='LifechoicesOnline',
+                                        auth_plugin='mysql_native_password')
+
+        mycursor = mydb.cursor()
+
+    mycursor.execute()
+    sql = "INSERT INTO Login_out VALUES (%s, curtime())"
+    mycursor.execute(sql, [int(input("Enter id\n"))])
+    mydb.commit()
+
+    mycursor.execute("Select * from Login_out")
+    for i in mycursor:
+        print(i)
+
+def reg():
+    import User_number
+    
+    logIn.withdraw
 
 root = Tk()
 root.title('Lifechoices Online')
@@ -28,27 +55,12 @@ lblUser.place(x=200, y=200)
 entUser = Entry(root, width=45)
 entUser.place(x=350, y=200, width=100)
 
-btnlogin = Button(root, text='Login', bg='#0F52BA', fg='white', command='')
+btnlogin = Button(root, text='Login', bg='#0F52BA', fg='white', command=logging)
 btnlogin.place(x=200, y=400, width=80)
 
 btnReg = Button(root, text='Register', bg='#0F52BA', fg='white', command='')
 btnReg.place(x=400, y=400, width=80)
 
 root.mainloop()
-
-import mysql.connector
-mydb = mysql.connector.connect(user='lifechoices',
-                               password='@Lifechoices1234',
-                               host='127.0.0.1',
-                               database='LifechoicesOnline',
-                               auth_plugin='mysql_native_password')
-mycursor = mydb.cursor()
-sql = "INSERT INTO Login_out VALUES (%s, curtime())"
-mycursor.execute(sql, [int(input("Enter id\n"))])
-mydb.commit()
-
-mycursor.execute("Select * from Login_out")
-for i in mycursor:
-    print(i)
 
 
