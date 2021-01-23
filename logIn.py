@@ -2,64 +2,36 @@ import mysql.connector
 import tkinter as tk
 from tkinter import *
 from tkinter import messagebox
+from datetime import datetime
+now = datetime.now()
+formatted = now.strftime('%Y-%m-%d %H:%M:%S')
 
 
 def logging():
-    UserId = entUserId.get()
-    loginTodb(UserId)
+    id1 = entUserId.get()
+    mydb = mysql.connector.connect(user='lifechoices',
+                                    password='@Lifechoices1234',
+                                    host='127.0.0.1',
+                                    database='LifechoicesOnline',
+                                    auth_plugin='mysql_native_password')
 
-
-def loginTodb(UserId):
-    if UserId:
-        mydb = mysql.connector.connect(user='lifechoices',
-                                        password='@Lifechoices1234',
-                                        host='127.0.0.1',
-                                        database='LifechoicesOnline',
-                                        auth_plugin='mysql_native_password')
-
-        mycursor = mydb.cursor()
-
+    mycursor = mydb.cursor()
+    mycursor.execute('SELECT * FROM Users WHERE id=%s', [id1])
+    result = mycursor.fetchall()
+    if result:
+        messagebox.showinfo('Successful', 'You have successfully logged')
+        sql = "INSERT INTO Login_out (id, login_logout) VALUES (%s, %s)"
+        val = (id1, formatted)
+        mycursor.execute(sql, val)
+        mydb.commit()
+        # import User_number
     else:
-        mydb = mysql.connector.connect(user='lifechoices',
-                                        password='@Lifechoices1234',
-                                        host='127.0.0.1',
-                                        database='LifechoicesOnline',
-                                        auth_plugin='mysql_native_password')
-        mycursor=mydb.cursor()
-    myquery='INSERT INTO Login_out VALUES (%s, login_logout())'
-    mycursor.execute("Select * from Login_out")
-
-    val = int(UserId)
-    try:
-        mycursor.execute(myquery, val)
-        result = mycursor.fetchall()
-        if result:
-            for x in result:
-                messagebox.showinfo('Successfully logged')
-                import user_number
-        #     print(x)
-        # print('Query successful')
-
-    except:
-        mydb.rollback()
-        messagebox.showinfo('Error occurred', 'Go to the admin to register your details')
-
-        print('Error occurred')
+        messagebox.showinfo('Failed', 'Please check if you have used correct Id')
 
 
 def reg():
-        # mydb = mysql.connector.connect(user='lifechoices',
-        #                                 password='@Lifechoices1234',
-        #                                 host='127.0.0.1',
-        #                                 database='LifechoicesOnline',
-        #                                 auth_plugin='mysql_native_password')
-        #
-        # mycursor = mydb.cursor()
-        # res = mycursor.fetchall()
-        # if res:
-        #     for y in res:
-                messagebox.showinfo('Admin', 'You are in admin please enter your admin id')
-                import admin_login
+     messagebox.showinfo('Admin', 'You are in admin please enter your admin id')
+     import admin_login
 
 
 root = Tk()

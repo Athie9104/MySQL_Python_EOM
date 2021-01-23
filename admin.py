@@ -2,8 +2,55 @@ from tkinter import messagebox
 from tkinter import*
 import mysql.connector
 
+root = Tk()
+
+mydb = mysql.connector.connect(
+                                host="localhost",
+                                user="lifechoices",
+                                password="@Lifechoices1234",
+                                database="LifechoicesOnline"
+    )
+mycursor = mydb.cursor()
+mycursor.execute('SELECT full_name FROM Users limit 0,10')
+i=0
+for Users in mycursor:
+    for j in range(len(Users)):
+        lstUsers = Listbox(root, width='75', height='5')
+        lstUsers.place(x=20, y=300)
+
+        lstUsers.insert(END, Users[j])
+        i= i+1
+
 
 def saveTodb():
+    id1 = entid.get()
+    fullname = entfullname.get()
+    username = entusername.get()
+    password = entpassword.get()
+    mydb = mysql.connector.connect(
+                                    host="localhost",
+                                    user="lifechoices",
+                                    password="@Lifechoices1234",
+                                    database="LifechoicesOnline"
+    )
+    mycursor = mydb.cursor()
+
+    sql = "INSERT INTO Users (id, full_name, username, password) VALUES (%s, %s, %s, %s)"
+    val = (id1, fullname, username, password)
+    mycursor.execute(sql, val)
+    # mycursor.execute()
+    mydb.commit()
+    messagebox.showinfo("Registration", "Successfully Register")
+
+    print(mycursor.rowcount, "record inserted.")
+
+
+def delete():
+    lstUsers.delete(ANCHOR)
+    # lstUsers.config(text='')
+
+
+def update():
     id1 = entid.get()
     fullname = entfullname.get()
     username = entusername.get()
@@ -17,19 +64,16 @@ def saveTodb():
 
     mycursor = mydb.cursor()
 
-    sql = "INSERT INTO Users (id, full_name, username, password) VALUES (%s, %s, %s, %s)"
+    sql = "UPDATE Users SET (id, full_name, username, password) VALUES (%s, %s, %s, %s)"
     val = (id1, fullname, username, password)
     mycursor.execute(sql, val)
-    # mycursor.execute()
     mydb.commit()
-    messagebox.showinfo("Registration", "Successfully Register")
-
-    print(mycursor.rowcount, "record inserted.")
+    messagebox.showinfo('Info', 'Record Update')
 
 
-root = Tk()
+
 root.title('Lifechoices Online')
-root.geometry('600x500')
+root.geometry('650x500')
 root.configure(bg='#F49F1C')
 
 lbl_register = Label(root,  bg='#F49F1C', fg='#0F52BA', text='Register')
@@ -49,18 +93,24 @@ entfullname = Entry(root, width=45)
 entfullname.place(x=300, y=140, width=120)
 
 lbl_password = Label(root,  bg='#F49F1C', fg='white', text='Password',)
-lbl_password.place(x=200, y=180)
+lbl_password.place(x=200, y=220)
 
 entpassword = Entry(root, width=45)
-entpassword.place(x=300, y=180, width=120)
+entpassword.place(x=300, y=220, width=120)
 
 lbl_username = Label(root,  bg='#F49F1C', fg='white', text='Username',)
-lbl_username.place(x=200, y=220)
+lbl_username.place(x=200, y=180)
 
 entusername = Entry(root, width=45)
-entusername.place(x=300, y=220, width=120)
+entusername.place(x=300, y=180, width=120)
 
-reg_btn = Button(root, text='Submit', bg='#0F52BA', fg='white', command=saveTodb)
-reg_btn.place(x=280, y=300, width=80)
+btnInsert = Button(root, text='Insert', bg='#0F52BA', fg='white', command=saveTodb)
+btnInsert.place(x=160, y=450, width=80)
+
+btnUpdate = Button(root, text='Update', bg='#0F52BA', fg='white', command=update)
+btnUpdate.place(x=260, y=450, width=80)
+
+btnDelete = Button(root, text='Delete', bg='#0F52BA', fg='white', command=delete)
+btnDelete.place(x=360, y=450, width=80)
 
 root.mainloop()
