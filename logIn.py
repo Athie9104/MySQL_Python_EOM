@@ -1,8 +1,8 @@
-import mysql.connector
-import tkinter as tk
 from tkinter import *
 from tkinter import messagebox
 from datetime import datetime
+import mysql.connector
+
 now = datetime.now()
 formatted = now.strftime('%Y-%m-%d %H:%M:%S')
 
@@ -24,9 +24,11 @@ def logging():
         val = (id1, formatted)
         mycursor.execute(sql, val)
         mydb.commit()
-        # import User_number
+        import User_number
+        root.withdraw()
     else:
         messagebox.showinfo('Failed', 'Please check if you have used correct Id')
+        entUserId.focus()
 
 
 def reg():
